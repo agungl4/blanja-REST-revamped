@@ -3,6 +3,8 @@ const addNewModel = require('../models/product')
 const addExistingModel = require('../models/product')
 const updateModel = require('../models/product')
 const form = require('../helpers/form')
+const getSizeModel = require('../models/product')
+const getColorModel = require('../models/product')
 
 module.exports = {
     getById: (req, res) => {
@@ -18,20 +20,20 @@ module.exports = {
     addNew: (req, res) => {
         const insert_product = req.body
         addNewModel.addNew(insert_product)
-        .then((data) => {
-            form.success(res, data)
-        }).catch((err) => {
-            form.error(res, err)
-        })
+            .then((data) => {
+                form.success(res, data)
+            }).catch((err) => {
+                form.error(res, err)
+            })
     },
     addExisting: (req, res) => {
         const add_stock = req.body
         addExistingModel.addExisting(add_stock)
-        .then((data) => {
-            form.success(res, data)
-        }).catch((err) => {
-            form.error(res, err)
-        })
+            .then((data) => {
+                form.success(res, data)
+            }).catch((err) => {
+                form.error(res, err)
+            })
     },
     updateProduct: (req, res) => {
         const { id } = req.body
@@ -41,12 +43,28 @@ module.exports = {
             updated_at: new Date(Date.now())
         }
         updateModel.updateProduct(id, updatePatch)
-        .then((result) => {
-            const output = {
-                msg: `Data updated at id ${id}`,
-                ...result,
-            }
-            res.json(output)
+            .then((result) => {
+                const output = {
+                    msg: `Data updated at id ${id}`,
+                    ...result,
+                }
+                res.json(output)
+            }).catch((err) => {
+                form.error(res, err)
+            })
+    },
+    getSize: (req, res) => {
+        const { id } = req.params
+        getSizeModel.getSize(id).then((data) => {
+            form.success(res, data)
+        }).catch((err) => {
+            form.error(res, err)
+        })
+    },
+    getColor: (req, res) => {
+        const {id} = req.params
+        getColorModel.getColor(id).then((data) => {
+            form.success(res, data)
         }).catch((err) => {
             form.error(res, err)
         })

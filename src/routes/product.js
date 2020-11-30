@@ -15,4 +15,8 @@ productRouter.post("/add-stock", productController.addExisting)
 //update pivot
 productRouter.patch("/update", productController.updateProduct)
 
+productRouter.get("/get_size/:id", productController.getSize)
+
+productRouter.get("/get_color/:id", productController.getColor)
+
 module.exports = productRouter
