@@ -50,7 +50,7 @@ module.exports = {
                 }
                 res.json(output)
             }).catch((err) => {
-                form.error(res, err)
+                res.json(err)
             })
     },
     getSize: (req, res) => {

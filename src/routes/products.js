@@ -5,7 +5,7 @@ const productsRouter = express.Router()
 const productsController = require('../controllers/products')
 
 //DELETE
-productsRouter.delete("/delete", productsController.deleteProduct)
+productsRouter.delete("/delete/:id", productsController.deleteProduct)
 
 // SORT
 productsRouter.get("/", productsController.sortProduct)
