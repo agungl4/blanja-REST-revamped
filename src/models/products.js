@@ -31,5 +31,41 @@ module.exports = {
         }
       });
     });
+  },
+  allProduct: () => {
+    return new Promise((resolve, reject) => {
+      const queryString = `SELECT id, product_name FROM products`
+      db.query(queryString, (err, data) => {
+        if (!err) {
+          resolve(data)
+        } else {
+          reject(err)
+        }
+      })
+    })
+  },
+  getColor: () => {
+    return new Promise((resolve, reject) => {
+      const qs = 'SELECT * FROM color'
+      db.query(qs, (err, data) => {
+        if (!err) {
+          resolve(data)
+        } else {
+          reject(err)
+        }
+      })
+    })
+  },
+  getSize: () => {
+    return new Promise((resolve, reject) => {
+      const qs = 'SELECT * FROM size'
+      db.query(qs, (err, data) => {
+        if (!err) {
+          resolve(data)
+        } else {
+          reject(err)
+        }
+      })
+    })
   }
 }

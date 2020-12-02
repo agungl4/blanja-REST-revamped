@@ -1,5 +1,6 @@
 const sortModel = require('../models/products')
 const deleteModel = require('../models/products')
+const getModel = require('../models/products')
 const form = require('../helpers/form')
 module.exports = {
   sortProduct: (req, res) => {
@@ -36,5 +37,29 @@ module.exports = {
       .catch((err) => {
         res.json(err);
       })
+  },
+  showAll:(req,res) => {
+    getModel.allProduct()
+    .then((data) => {
+      form.success(res, data)
+    }).catch((err) => {
+      form.error(res, err)
+    })
+  },
+  getColor:(req,res) => {
+    getModel.getColor()
+    .then((data) => {
+      form.success(res, data)
+    }).catch((err) => {
+      form.error(res,err)
+    })
+  },
+  getSize:(req,res) => {
+    getModel.getSize()
+    .then((data) => {
+      form.success(res, data)
+    }).catch((err) => {
+      form.error(res,err)
+    })
   }
 }
