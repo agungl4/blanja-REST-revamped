@@ -1,8 +1,8 @@
+require('dotenv').config()
 const express = require('express');
 const logger = require('morgan');
 const app = express();
 const port = 8000
-const db = require('./src/config/mySQL')
 const mainRouter = require('./src/routes/index')
 const cors = require('cors')
 
@@ -11,7 +11,9 @@ app.listen(port, () => {
     console.log(`server running in port ${port}`);
 })
 
-app.use(cors())
+app.use(express.static("public"));
+// memperbolehkan access dari semua origin
+app.use(cors());
 // tambah logger
 app.use(logger("dev"))
 
