@@ -1,5 +1,6 @@
 const authModel = require("../models/auth");
 const form = require("../helpers/form");
+const { token } = require("morgan");
 
 module.exports = {
   signup: (req, res) => {
@@ -29,4 +30,27 @@ module.exports = {
         form.error(res, err);
       });
   },
+  logout: (req, res) => {
+    const bearerToken = req.header("x-access-token");
+    if (!bearerToken) {
+      res.json({
+        msg: `token null!`
+      })
+    } else {
+      blacklisToken = {
+        token: bearerToken.split(" ")[1]
+      }
+
+      authModel
+      .postLogout(bearerToken)
+      .then((result) => {
+        res.json({
+          msg: `token already blacklisted, so its mean you already logout from system`
+        })
+      }).catch((error) => {
+        res.json(error)
+      })
+    }
+
+  }
 };

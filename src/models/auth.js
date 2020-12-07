@@ -84,4 +84,16 @@ module.exports = {
       });
     });
   },
+  postLogout:(bearerToken) => {
+    return new Promise((resolve, reject) => {
+      const queryStr = "INSERT INTO blocklist_token SET ?"
+      db.query(queryStr, blacklisToken, (err, data) => {
+        if (!err) {
+          resolve(data)
+        } else {
+          reject(err)
+        }
+      })
+    })
+  }
 };
