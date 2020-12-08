@@ -21,11 +21,12 @@ module.exports = {
         let insert_product = req.body
         insert_product = {...insert_product, 
         product_img: req.filePath}
+        const image = req.filePath.split(',')
         addNewModel.addNew(insert_product)
             .then((data) => {
                 form.success(res, {
                     ...insert_product,
-                    // product_img: product_img.split(",")
+                    product_img: image
                 })
             }).catch((err) => {
                 form.error(res, err)

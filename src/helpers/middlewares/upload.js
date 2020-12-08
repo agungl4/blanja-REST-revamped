@@ -7,7 +7,7 @@ const multerStorage = multer.diskStorage({
         cb(null, "./public/images");
     },
     filename: function (req, file, cb) {
-        const nameFormat = `${file.fieldname}-${Date.now()}${path.extname(
+        const nameFormat = `image-${Date.now()}${path.extname(
             file.originalname
         )}`;
         cb(null, nameFormat);
@@ -28,18 +28,13 @@ const multiUpload = (req, res, next) => {
                 err,
             });
         } else {
-            let filePath = []
-            for (let i = 0; i < req.files.length; i++) {
-                filePath.push("/images/" + req.files[i].filename)
-                console.log(i + ' ' + filePath[i])
-            }
-
+            let filePath = req.files.map((val) => 
+                "/images/" + val.filename    
+            )
             req.filePath = filePath.join(',')
             next();
         }
     });
 };
-
-
 
 module.exports = multiUpload;
