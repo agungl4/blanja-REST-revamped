@@ -11,10 +11,8 @@ imgUploadRouter.post("/", multiUpload, (req, res) => {
     // req.files && req.files.map(value, index => {
     //     filePath[index] = value.filename
     // })
-
-
-    res.json(filePath)
-
+    req.filePath = filePath.join(',')
+    next()
     // const filePath = "/images/" + req.files.filename;
     // res.json(req.files[0].filename);
 

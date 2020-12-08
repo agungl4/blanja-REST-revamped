@@ -40,7 +40,7 @@ module.exports = (req, res, next) => {
       //cek decodedToken apakah cocok
       try {
         console.log(result)
-        decodedToken = jsonwebtoken.verify(result, process.env.SECRET_KEY)
+        const decodedToken = jsonwebtoken.verify(result, process.env.SECRET_KEY)
         //asign decodedToken to req
         req = {
           ...req,

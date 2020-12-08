@@ -9,7 +9,8 @@ const transactionRouter = require("./transaction")
 const authRouter = require('./auth')
 
 const verifyToken = require("../helpers/middlewares/verifyToken");
-const imgUploadRouter = require("./imgUpload");
+// const imgUploadRouter = require("./imgUpload");
+
 
 //calling endpoint handler
 mainRouter.use("/", welcomeRouter)
@@ -18,7 +19,7 @@ mainRouter.use("/product", productRouter) // endpoint insert, update
 mainRouter.use("/search", searchRouter) // endpoint filter
 mainRouter.use("/transaction", transactionRouter)
 mainRouter.use("/auth", authRouter)
-mainRouter.use("/upload", imgUploadRouter)
+// mainRouter.use("/upload", imgUploadRouter)
 
 
 module.exports = mainRouter

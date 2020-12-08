@@ -19,6 +19,8 @@ module.exports = {
     },
     addNew: (req, res) => {
         const insert_product = req.body
+        insert_product = {...insert_product, 
+        product_img: req.filePath}
         addNewModel.addNew(insert_product)
             .then((data) => {
                 form.success(res, data)

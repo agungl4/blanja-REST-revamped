@@ -8,8 +8,8 @@ const multerStorage = multer.diskStorage({
     },
     filename: function (req, file, cb) {
         const nameFormat = `${file.fieldname}-${Date.now()}${path.extname(
-      file.originalname
-    )}`;
+            file.originalname
+        )}`;
         cb(null, nameFormat);
     },
 });
@@ -28,9 +28,18 @@ const multiUpload = (req, res, next) => {
                 err,
             });
         } else {
+            let filePath = []
+            for (let i = 0; i < req.files.length; i++) {
+                filePath.push("/images/" + req.files[i].filename)
+                console.log(i + ' ' + filePath[i])
+            }
+
+            req.filePath = filePath.join(',')
             next();
         }
     });
 };
+
+
 
 module.exports = multiUpload;

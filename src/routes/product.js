@@ -1,12 +1,13 @@
 const express = require('express')
 const productRouter = express.Router()
 const productController = require('../controllers/product')
+const multiUpload = require("../helpers/middlewares/upload");
 
 //get by id
 productRouter.get('/:id', productController.getById )
 
 //add New Product
-productRouter.post("/add-product", productController.addNew)
+productRouter.post("/add-product", multiUpload,productController.addNew)
 
 //add from Existing Product
 productRouter.post("/add-stock", productController.addExisting) 
