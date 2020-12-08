@@ -3,7 +3,7 @@ module.exports = {
     trxHistory: () => {
         return new Promise ((resolve, reject) => {
             const queryStr = 
-            `SELECT th.id AS 'Transaksi ID', u.fullname AS 'User', p.product_name  AS 'Nama Produk', c.category_name as 'Kategori' , pc.color_name as 'Warna', ps.size_name AS 'Ukuran', pco.condition_name AS 'Kondisi', th.product_qty AS 'Jumlah pembelian', p.product_price AS 'Satuan', (th.product_qty * p.product_price) AS 'Total Harga', th.created_at AS 'Waktu Transaksi'        
+            `SELECT th.id AS 'Transaksi_ID', u.fullname AS 'User', p.product_name  AS 'Nama_Produk', c.category_name as 'Kategori' , pc.color_name as 'Warna', ps.size_name AS 'Ukuran', pco.condition_name AS 'Kondisi', th.product_qty AS 'Jumlah_pembelian', p.product_price AS 'Satuan', (th.product_qty * p.product_price) AS 'Total_Harga', th.created_at AS 'Waktu_Transaksi'        
             FROM history th        
             JOIN users u ON th.user_id = u.id        
             JOIN master m ON th.product = m.id        
