@@ -1,5 +1,4 @@
 const sortModel = require('../models/products')
-const deleteModel = require('../models/products')
 const getModel = require('../models/products')
 const form = require('../helpers/form')
 module.exports = {
@@ -24,42 +23,40 @@ module.exports = {
         form.error(res, err)
       })
   },
-  deleteProduct: (req, res) => {
-    const { id } = req.params
-    deleteModel.deleteProduct(id)
+  showAll: (req, res) => {
+    const { query } = req;
+    const limit = Number(query.limit) || 2;
+    const page = Number(query.page) || 1;
+    const offset = (page - 1) * limit || 0;
+
+    getModel.allProduct(limit, offset, page)
       .then((data) => {
-        const output = {
-          deletedId: id,
-          msg: data
+        if (Math.ceil(data.products / limit) == data.products) {
+          res.status(404).json({
+            msg: "Page Not Found",
+            status: 404,
+          });
+        } else {
+          form.success(res, data)
         }
-        res.json(output)
-      })
-      .catch((err) => {
-        res.json(err);
+      }).catch((err) => {
+        form.error(res, err)
       })
   },
-  showAll:(req,res) => {
-    getModel.allProduct()
-    .then((data) => {
-      form.success(res, data)
-    }).catch((err) => {
-      form.error(res, err)
-    })
-  },
-  getColor:(req,res) => {
+  getColor: (req, res) => {
     getModel.getColor()
-    .then((data) => {
-      form.success(res, data)
-    }).catch((err) => {
-      form.error(res,err)
-    })
+      .then((data) => {
+        form.success(res, data)
+      }).catch((err) => {
+        form.error(res, err)
+      })
   },
-  getSize:(req,res) => {
+  getSize: (req, res) => {
     getModel.getSize()
-    .then((data) => {
-      form.success(res, data)
-    }).catch((err) => {
-      form.error(res,err)
-    })
+      .then((data) => {
+        form.success(res, data)
+      }).catch((err) => {
+        form.error(res, err)
+      })
   }
 }
