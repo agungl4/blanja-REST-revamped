@@ -17,11 +17,7 @@ module.exports = {
             const queryStr = "INSERT INTO products SET ?"
             db.query(queryStr, insert_product, (err, data) => {
                 if (!err) {
-                    resolve(
-                        {
-                            msg : `data berhasil di insert`
-                        }
-                    )
+                    resolve({ msg : `data berhasil di insert` })
                 } else {
                     reject(err)
                 }

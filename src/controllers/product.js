@@ -20,8 +20,10 @@ module.exports = {
     },
     addNew: (req, res) => {
         let insert_product = req.body
-        insert_product = {...insert_product, 
-        product_img: req.filePath}
+        insert_product = {
+            ...insert_product,
+            product_img: req.filePath
+        }
         const image = req.filePath.split(',')
         addNewModel.addNew(insert_product)
             .then((data) => {
@@ -69,7 +71,7 @@ module.exports = {
         })
     },
     getColor: (req, res) => {
-        const {id} = req.params
+        const { id } = req.params
         getColorModel.getColor(id).then((data) => {
             form.success(res, data)
         }).catch((err) => {
@@ -79,15 +81,15 @@ module.exports = {
     deleteProduct: (req, res) => {
         const { id } = req.params
         deleteModel.deleteProduct(id)
-          .then((data) => {
-            const output = {
-              deletedId: id,
-              msg: data
-            }
-            res.json(output)
-          })
-          .catch((err) => {
-            res.json(err);
-          })
-      },
+            .then((data) => {
+                const output = {
+                    deletedId: id,
+                    msg: data
+                }
+                res.json(output)
+            })
+            .catch((err) => {
+                res.json(err);
+            })
+    },
 }
