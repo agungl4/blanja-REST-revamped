@@ -5,6 +5,7 @@ const updateModel = require('../models/product')
 const form = require('../helpers/form')
 const getSizeModel = require('../models/product')
 const getColorModel = require('../models/product')
+const deleteModel = require('../models/product')
 
 module.exports = {
     getById: (req, res) => {
@@ -74,5 +75,19 @@ module.exports = {
         }).catch((err) => {
             form.error(res, err)
         })
-    }
+    },
+    deleteProduct: (req, res) => {
+        const { id } = req.params
+        deleteModel.deleteProduct(id)
+          .then((data) => {
+            const output = {
+              deletedId: id,
+              msg: data
+            }
+            res.json(output)
+          })
+          .catch((err) => {
+            res.json(err);
+          })
+      },
 }
