@@ -75,8 +75,8 @@ module.exports = {
               // jwt => sign, verify
               const secret = process.env.SECRET_KEY;
               // sign => mendapatkan token dari payload
+              const token = jwt.sign(payload, secret, { expiresIn: '24h' });
               // token dikirim ke client
-              const token = jwt.sign(payload, secret);
               resolve({ token });
             }
           });
