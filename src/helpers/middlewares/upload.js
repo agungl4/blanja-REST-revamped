@@ -16,7 +16,7 @@ const multerStorage = multer.diskStorage({
 
 const upload = multer({
     storage: multerStorage,
-    limits: 2 * 1000 * 1000, // 2 MB
+    limits: {fileSize: 2 * 1000 * 1000,}  // 2 MB
 });
 
 const multiUpload = (req, res, next) => {
