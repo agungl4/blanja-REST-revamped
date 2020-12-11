@@ -24,14 +24,7 @@ module.exports = {
 
     sortModel.sortProduct(addQuery,urlQuery, limit, offset, page)
       .then((data) => {
-        if (Math.ceil(data.products / limit) == data.products) {
-          res.status(404).json({
-            msg: "Page Not Found",
-            status: 404,
-          });
-        } else {
           form.success(res, data)
-        }
       })
       .catch((err) => {
         form.error(res, err)
