@@ -45,13 +45,34 @@ module.exports = {
             })
     },
     updateProduct: (req, res) => {
+        const { id } = req.params
+        let { body } = req
+
+        if(req.filePath != ''){
+            body = {
+                ...body,
+                product_img: req.filePath,
+            }
+        }
+        updateModel.updateProduct(body, id)
+            .then((result) => {
+                const output = {
+                    msg: `Data updated at id ${id}`,
+                    ...result,
+                }
+                res.json(output)
+            }).catch((err) => {
+                res.json(err)
+            })
+    },
+    updateStock: (req, res) => {
         const { id } = req.body
         const { body } = req
         const updatePatch = {
             ...body,
             updated_at: new Date(Date.now())
         }
-        updateModel.updateProduct(id, updatePatch)
+        updateModel.updateStock(id, updatePatch)
             .then((result) => {
                 const output = {
                     msg: `Data updated at id ${id}`,

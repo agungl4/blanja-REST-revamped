@@ -15,7 +15,9 @@ productRouter.post("/add-stock", verifyToken.isSeller, productController.addExis
 
 
 //update pivot table using pivotid
-productRouter.patch("/update", verifyToken.isSeller, productController.updateProduct)
+productRouter.patch("/update", verifyToken.isSeller, productController.updateStock)
+
+productRouter.patch("/updatePrd/:id", verifyToken.isSeller, multiUpload,productController.updateProduct)
 
 //DELETE
 productRouter.delete("/delete/:id", verifyToken.isSeller, productController.deleteProduct)

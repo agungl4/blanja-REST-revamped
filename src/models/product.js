@@ -38,7 +38,22 @@ module.exports = {
             })
         })
     },
-    updateProduct: (id, updatePatch) => {
+    updateProduct: (body, id) => {
+        // console.log(body, id)
+        return new Promise ((resolve, reject) => {
+            const queryStr = 'UPDATE products SET ? WHERE id = ? '
+            db.query(queryStr, [body, id], (err, data ) => {
+                if(!err){
+                    resolve({
+                        msg : `berhasil pada id ${id}`
+                    })
+                }else{
+                    reject(err)
+                }
+            })
+        })
+    },
+    updateStock: (id, updatePatch) => {
         return new Promise((resolve, reject) => {
             const queryStr = "UPDATE master SET ? WHERE id = ?"
             db.query(queryStr, [updatePatch, id], (err, data) => {
