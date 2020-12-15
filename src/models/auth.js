@@ -35,7 +35,7 @@ module.exports = {
     return new Promise((resolve, reject) => {
       const { username, password } = body;
       // query ke DB => SELECT password WHERE username == username body
-      const qs = "SELECT password, level_id FROM users WHERE username=?";
+      const qs = "SELECT id, username,password, level_id FROM users WHERE username=?";
       db.query(qs, username, (err, data) => {
         // Handle Error SQL
         if (err) {
@@ -69,6 +69,7 @@ module.exports = {
               });
             } else {
               const payload = {
+                user_id: data[0].id,
                 username,
                 level: data[0].level_id,
               };

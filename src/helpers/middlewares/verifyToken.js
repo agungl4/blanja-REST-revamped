@@ -4,6 +4,33 @@ const form = require('../form')
 
 
 module.exports = {
+  isRegistered:(req, res, next) => {
+    const { username } = req.body
+    const checkAvailable = new Promise ((resolve, reject) => {
+        const queryStr = `SELECT username FROM users WHERE username = ?`
+        db.query(queryStr, username, (err, data) => {
+            if(!err){
+                if(!data[0]){
+                    resolve({
+                        msg: `success`
+                    })
+                }else{
+                    reject({
+                        msg: `username telah digunakan!`
+                    })
+                }
+            }else{
+                reject({
+                    msg: `SQLquery ERROR!`
+                })
+            }
+        })
+    }).then((result) => {
+        next()
+    }).catch((error) => {
+        form.error(res, error)
+    })
+},
   isLogin: (req, res, next) => {
     const bearerToken = req.header("x-access-token");
     //jika tidak ada header x-access-token

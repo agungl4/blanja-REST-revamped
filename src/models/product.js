@@ -30,7 +30,8 @@ module.exports = {
             db.query(queryStr, add_stock, (err, data) => {
                 if(!err){
                     resolve({
-                        msg : `stock barang berhasil di update`
+                        msg: `stock barang berhasil di tambah`,
+                        data: add_stock
                     })
                 }else{
                     reject(err)
