@@ -6,6 +6,8 @@ const verifyToken = require("../helpers/middlewares/verifyToken");
 
 //get by id
 productRouter.get('/:id', productController.getById )
+productRouter.get('/productId/:id', productController.getProductId )
+productRouter.get('/pivotTb/:id', productController.getPivotId )
 
 //add New Product
 productRouter.post("/add-product", verifyToken.isSeller, multiUpload, productController.addNew)

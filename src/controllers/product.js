@@ -40,7 +40,8 @@ module.exports = {
     addExisting: (req, res) => {
         // const add_stock = req.body
         const { user_id } = req.decodedToken
-        add_stock = {...req.body,
+        add_stock = {
+            ...req.body,
             user_id
         }
         addExistingModel.addExisting(add_stock)
@@ -54,7 +55,7 @@ module.exports = {
         const { id } = req.params
         let { body } = req
 
-        if(req.filePath != ''){
+        if (req.filePath != '') {
             body = {
                 ...body,
                 product_img: req.filePath,
@@ -119,4 +120,24 @@ module.exports = {
                 res.json(err);
             })
     },
+    getProductId: (req, res) => {
+        const { id } = req.params
+        getByIdModel.getProductId(id)
+            .then((data) => {
+                form.success(res, data)
+            })
+            .catch((err) => {
+                form.error(res, err)
+            })
+    },
+    getPivotId: (req, res) => {
+        const { id } = req.params
+        getByIdModel.getPivotId(id)
+            .then((data) => {
+                form.success(res, data)
+            })
+            .catch((err) => {
+                form.error(res, err)
+            })
+    }
 }

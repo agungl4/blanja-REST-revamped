@@ -1,9 +1,9 @@
 const db = require('../config/mySQL')
 module.exports = {
     getById: (id) => {
-       return new Promise((resolve, reject) => {
+        return new Promise((resolve, reject) => {
             const queryStr = "SELECT m.id, m.product_id, p.product_name, p.category_id, c.category_name, pc.id AS 'color_id',pc.color_name, ps.id AS 'size_id', ps.size_name, pco.id AS 'condition_id' ,pco.condition_name, p.product_desc, p.product_price, p.product_img, m.qty, m.created_at, m.updated_at FROM master m JOIN products p ON m.product_id = p.id JOIN category c ON p.category_id = c.id JOIN color pc ON m.color_id = pc.id JOIN size ps ON m.size_id = ps.id JOIN conditions pco ON m.condition_id = pco.id WHERE m.product_id = ? GROUP BY m.product_id"
-            db.query(queryStr, id , (err, data) => {
+            db.query(queryStr, id, (err, data) => {
                 if (!err) {
                     resolve(data)
                 } else {
@@ -17,7 +17,7 @@ module.exports = {
             const queryStr = "INSERT INTO products SET ?"
             db.query(queryStr, insert_product, (err, data) => {
                 if (!err) {
-                    resolve({ msg : `data berhasil di insert` })
+                    resolve({ msg: `data berhasil di insert` })
                 } else {
                     reject(err)
                 }
@@ -28,12 +28,12 @@ module.exports = {
         return new Promise((resolve, reject) => {
             const queryStr = "INSERT INTO master SET ?"
             db.query(queryStr, add_stock, (err, data) => {
-                if(!err){
+                if (!err) {
                     resolve({
                         msg: `stock barang berhasil di tambah`,
                         data: add_stock
                     })
-                }else{
+                } else {
                     reject(err)
                 }
             })
@@ -41,14 +41,14 @@ module.exports = {
     },
     updateProduct: (body, id) => {
         // console.log(body, id)
-        return new Promise ((resolve, reject) => {
+        return new Promise((resolve, reject) => {
             const queryStr = 'UPDATE products SET ? WHERE id = ? '
-            db.query(queryStr, [body, id], (err, data ) => {
-                if(!err){
+            db.query(queryStr, [body, id], (err, data) => {
+                if (!err) {
                     resolve({
-                        msg : `berhasil pada id ${id}`
+                        msg: `berhasil pada id ${id}`
                     })
-                }else{
+                } else {
                     reject(err)
                 }
             })
@@ -81,14 +81,14 @@ module.exports = {
         })
     },
     getColor: (id) => {
-        return new Promise ((resolve, reject) => {
+        return new Promise((resolve, reject) => {
             const queryStr = `SELECT m.product_id,c.id, c.color_name FROM master m
                             JOIN color c ON m.color_id = c.id
                             WHERE m.product_id = ? GROUP BY c.color_name`
             db.query(queryStr, id, (err, data) => {
-                if(!err){
+                if (!err) {
                     resolve(data)
-                }else{
+                } else {
                     reject(err)
                 }
             })
@@ -96,14 +96,38 @@ module.exports = {
     },
     deleteProduct: (id) => {
         return new Promise((resolve, reject) => {
-          const qs = "DELETE FROM master WHERE id = ?";
-          db.query(qs, id, (err, data) => {
-            if (!err) {
-              resolve(`Data berhasil dihapus pada id = ${id}`);
-            } else {
-              reject(err);
-            }
-          });
+            const qs = "DELETE FROM master WHERE id = ?";
+            db.query(qs, id, (err, data) => {
+                if (!err) {
+                    resolve(`Data berhasil dihapus pada id = ${id}`);
+                } else {
+                    reject(err);
+                }
+            });
         });
-      },
+    },
+    getProductId: (id) => {
+        return new Promise((resolve, reject) => {
+            const queryStr = "SELECT * FROM products WHERE id = ? "
+            db.query(queryStr, id, (err, data) => {
+                if (!err) {
+                    resolve(data)
+                } else {
+                    reject(err)
+                }
+            })
+        })
+    },
+    getPivotId: (id) => {
+        return new Promise((resolve, reject) => {
+            const queryStr = "SELECT * FROM master WHERE id = ? "
+            db.query(queryStr, id, (err, data) => {
+                if (!err) {
+                    resolve(data)
+                } else {
+                    reject(err)
+                }
+            })
+        })
+    }
 }

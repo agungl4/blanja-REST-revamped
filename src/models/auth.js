@@ -78,7 +78,7 @@ module.exports = {
               // sign => mendapatkan token dari payload
               const token = jwt.sign(payload, secret, { expiresIn: '24h' });
               // token dikirim ke client
-              resolve({ token });
+              resolve({ token, user_id: data[0].id, level: data[0].level_id});
             }
           });
         }
