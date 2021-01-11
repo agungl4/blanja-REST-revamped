@@ -4,33 +4,34 @@ const form = require('../form')
 
 
 module.exports = {
-  isRegistered:(req, res, next) => {
-    const { username } = req.body
-    const checkAvailable = new Promise ((resolve, reject) => {
-        const queryStr = `SELECT username FROM users WHERE username = ?`
-        db.query(queryStr, username, (err, data) => {
-            if(!err){
-                if(!data[0]){
-                    resolve({
-                        msg: `success`
-                    })
-                }else{
-                    reject({
-                        msg: `username telah digunakan!`
-                    })
-                }
-            }else{
-                reject({
-                    msg: `SQLquery ERROR!`
-                })
-            }
-        })
+  isRegistered: (req, res, next) => {
+    const { email } = req.body
+    const checkAvailable = new Promise((resolve, reject) => {
+      const queryStr = `SELECT email FROM users WHERE email = ?`
+      db.query(queryStr, email, (err, data) => {
+        if (!err) {
+          if (!data[0]) {
+            resolve({
+              msg: `success`
+            })
+          } else {
+            reject({
+              msg: `email telah digunakan!`
+            })
+          }
+        } else {
+          reject({
+            msg: `SQLquery ERROR!`,
+            details:err
+          })
+        }
+      })
     }).then((result) => {
-        next()
+      next()
     }).catch((error) => {
-        form.error(res, error)
+      res.status(500).json(error)
     })
-},
+  },
   isLogin: (req, res, next) => {
     const bearerToken = req.header("x-access-token");
     //jika tidak ada header x-access-token
@@ -86,15 +87,15 @@ module.exports = {
   isSeller: (req, res, next) => {
     const { level } = req.decodedToken
     if (level != 2) {
-        form.error(res,
-            {
-                status: 401,
-                msg: `Unauthorized Access`,
-                details: `Yout dont have permission to access this page.`
-            }
-        )
+      form.error(res,
+        {
+          status: 401,
+          msg: `Unauthorized Access`,
+          details: `Yout dont have permission to access this page.`
+        }
+      )
     } else {
-        next()
+      next()
     }
-}
+  }
 }

@@ -1,100 +1,462 @@
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-
-const db = require("../config/mySQL");
+const db = require('../config/mySQL')
+const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
+const otp = require('otp-generator')
+const nodemailer = require('nodemailer')
 
 module.exports = {
-  postNewUser: (body) => {
-    return new Promise((resolve, reject) => {
-    // genSalt
-      const saltRounds = 10;
-      bcrypt.genSalt(saltRounds, (err, salt) => {
-        if (err) {
-          reject(err);
-        }
-        // hash
-        bcrypt.hash(body.password, salt, (err, hashedPassword) => {
-          if (err) {
-            reject(err);
-          }
-          // store DB
-          const newBody = { ...body, password: hashedPassword };
-          const qs = "INSERT INTO users SET ?";
-          db.query(qs, newBody, (err, data) => {
-            if (!err) {
-              resolve(data);
-            } else {
-              reject(err);
-            }
-          });
-        });
-      });
-    });
-  },
-  postLogin: (body) => {
-    return new Promise((resolve, reject) => {
-      const { username, password } = body;
-      // query ke DB => SELECT password WHERE username == username body
-      const qs = "SELECT id, username,password, level_id FROM users WHERE username=?";
-      db.query(qs, username, (err, data) => {
-        // Handle Error SQL
-        if (err) {
-          reject({
-            msg: "Error SQL",
-            status: 500,
-            err,
-          });
-        }
-        // Handle User Not Found
-        if (!data[0]) {
-          reject({
-            msg: "User Not Found",
-            status: 404,
-          });
-        } else {
-          // Compare password from body and DB
-          bcrypt.compare(password, data[0].password, (err, result) => {
-            if (err) {
-              reject({
-                msg: "Hash Error",
-                status: 500,
-                err,
-              });
-            }
-            // result => true : false
-            if (!result) {
-              reject({
-                msg: "Wrong Password",
-                status: 401,
-              });
-            } else {
-              const payload = {
-                user_id: data[0].id,
-                username,
-                level: data[0].level_id,
-              };
-              // jwt => sign, verify
-              const secret = process.env.SECRET_KEY;
-              // sign => mendapatkan token dari payload
-              const token = jwt.sign(payload, secret, { expiresIn: '24h' });
-              // token dikirim ke client
-              resolve({ token, user_id: data[0].id, level: data[0].level_id});
-            }
-          });
-        }
-      });
-    });
-  },
-  postLogout:(bearerToken) => {
-    return new Promise((resolve, reject) => {
-      const queryStr = "INSERT INTO blocklist_token SET ?"
-      db.query(queryStr, blacklisToken, (err, data) => {
-        if (!err) {
-          resolve(data)
-        } else {
-          reject(err)
-        }
-      })
-    })
-  }
-};
+    postNewUser: (body) => {
+        return new Promise((resolve, reject) => {
+            const saltRounds = Math.floor(Math.random() * 10) + 1
+            //hashPw
+            bcrypt.hash(body.password, saltRounds, (err, hashedPassword) => {
+                //generate newBody from newPw
+                const newUser = { ...body, password: hashedPassword }
+                const queryStr = `INSERT INTO users SET ?`
+                db.query(queryStr, newUser, (err, data) => {
+                    if (!err) {
+                        const otpCode = otp.generate(6, { alphabets: true, upperCase: true, specialChars: false })
+                        const OTPsend = {
+                            email: body.email,
+                            otp: otpCode
+                        }
+                        const queryStr = `INSERT INTO tb_otp_activation SET ?`
+                        db.query(queryStr, OTPsend, (err, data) => {
+                            if (!err) {
+                                let transporter = nodemailer.createTransport({
+                                    service: 'gmail',
+                                    host: 'smtp.gmail.com',
+                                    port: 578,
+                                    secure: false,
+                                    auth: {
+                                        user: process.env.USER_EMAIL,
+                                        pass: process.env.PASS_EMAIL
+                                    }
+                                })
+                                // console.log(process.env.USER_EMAIL, process.env.PASS_EMAIL)
+
+                                let mailOptions = {
+                                    from: "BlanjaApp Team <blanja@mail.com>",
+                                    to: body.email,
+                                    subject: 'OTP Code Activation Account',
+                                    html:
+                                        ` 
+                                                <h1> OTP CODE from Blanja.in Team </h1>
+                                                <p> Hello, this is you OTP code ${otpCode} </p> 
+                                                <p> Use it to Activate Account </p>
+                                                `
+                                }
+                                transporter.sendMail(mailOptions, (err, data) => {
+                                    if (err) {
+                                        console.log("Its Error: ", err);
+                                    } else {
+                                        console.log(`Sent to ${body.email} Success!!!!`);
+                                        resolve({
+                                            status: 200,
+                                            message: `Kode OTP telah dikirim ke email anda`
+                                        })
+                                    }
+                                })
+
+                            } else {
+                                reject({
+                                    status: 500,
+                                    message: `Internal server error`,
+                                    details: err
+                                })
+                            }
+                        })
+                    } else {
+                        reject({
+                            msg: `ERROR!`,
+                            details: err
+                        })
+                    }
+                })
+            })
+        })
+    },
+    activate: (email, otp) => {
+        return new Promise((resolve, reject) => {
+            const queryStr = `SELECT * FROM tb_otp_activation WHERE email = ? AND otp = ?`
+            db.query(queryStr, [email, otp], (err, data) => {
+                if (!err) {
+                    if (data[0]) {
+                        const qs = `DELETE FROM tb_otp_activation WHERE email = ? and otp = ?`
+                        db.query(qs, [email, otp], (err, data) => {
+                            if (!err) {
+                                const activateAcc = `UPDATE users SET isActive = 1 WHERE email = ?`
+                                db.query(activateAcc, email, (err, data) => {
+                                    if (!err) {
+                                        resolve({
+                                            status: 200,
+                                            message: `Selamat akun anda berhasil diaktivasi`,
+                                            email: email
+                                        })
+                                    } else {
+                                        reject({
+                                            status: 500,
+                                            message: `INTERNAL SERVER ERROR`,
+                                            details: err
+                                        })
+                                    }
+                                })
+                            } else {
+                                reject({
+                                    status: 500,
+                                    message: `INTERNAL SERVER ERROR`,
+                                    details: err
+                                })
+                            }
+                        })
+                    } else {
+                        reject({
+                            status: 404,
+                            message: `Kode OTP tidak sesuai atau email belum terdaftar atau akun sudah pernah di aktivasi`
+                        })
+                    }
+                } else {
+                    reject({
+                        status: 500,
+                        message: `INTERNAL SERVER ERROR`,
+                        details: err
+                    })
+                }
+            })
+        })
+    },
+    resend: (email) => {
+        return new Promise((resolve, reject) => {
+            const getUser = `SELECT email, isActive FROM users WHERE email = ?`
+            db.query(getUser, email, (err, data) => {
+                if (!err) {
+                    if (data[0]) {
+                        if (data[0].isActive != 0) {
+                            resolve({
+                                status: 200,
+                                message: `Akun anda sudah pernah di aktivasi`
+                            })
+                        } else {
+                            const delOtp = `DELETE FROM tb_otp_activation WHERE email = ?`
+                            db.query(delOtp, email, (err, data) => {
+                                if (!err) {
+                                    const otpCode = otp.generate(6, { alphabets: true, upperCase: true, specialChars: false })
+                                    const dataResend = {
+                                        email: email,
+                                        otp: otpCode
+                                    }
+                                    const queryStr = `INSERT INTO tb_otp_activation SET ?`
+                                    db.query(queryStr, dataResend, (err, data) => {
+                                        if (!err) {
+                                            let transporter = nodemailer.createTransport({
+                                                service: 'gmail',
+                                                host: 'smtp.gmail.com',
+                                                port: 578,
+                                                secure: false,
+                                                auth: {
+                                                    user: process.env.USER_EMAIL,
+                                                    pass: process.env.PASS_EMAIL
+                                                }
+                                            })
+                                            console.log(process.env.USER_EMAIL, process.env.PASS_EMAIL)
+
+                                            let mailOptions = {
+                                                from: "BlanjaApp Team <blanja@mail.com>",
+                                                to: email,
+                                                subject: 'OTP Code Activation Account',
+                                                html:
+                                                    ` 
+                                                <h1> OTP CODE from Blanja.in Team </h1>
+                                                <p> Hello, this is you OTP code ${otpCode} </p> 
+                                                <p> Use it to Activate Account </p>
+                                                `
+                                            }
+                                            transporter.sendMail(mailOptions, (err, data) => {
+                                                if (err) {
+                                                    console.log("Its Error: ", err);
+                                                } else {
+                                                    console.log("Sent Success!!!!");
+                                                    resolve({
+                                                        status: 200,
+                                                        message: `Kode OTP telah dikirim ulang ke email anda`
+                                                    })
+                                                }
+                                            })
+
+                                        } else {
+                                            reject({
+                                                status: 500,
+                                                message: `Internal server error`,
+                                                details: err
+                                            })
+                                        }
+                                    })
+                                } else {
+                                    reject({
+                                        status: 500,
+                                        message: `Internal server error`,
+                                        details: err
+                                    })
+                                }
+                            })
+                        }
+                    } else {
+                        reject({
+                            status: 404,
+                            message: `Email tidak ditemukan`
+                        })
+                    }
+                } else {
+                    reject({
+                        status: 500,
+                        message: `Internal server error`,
+                        details: err
+                    })
+                }
+            })
+
+        })
+    },
+    postLogin: (body) => {
+        return new Promise((resolve, reject) => {
+            const { email, password } = body
+            
+            const queryStr = `SELECT id, email, password, level_id, fullname, isActive FROM users WHERE email = ?`
+            console.log(queryStr)
+            db.query(queryStr,email, (err, data) => {
+                console.log(err, data)
+                if (err) {
+                    reject({
+                        status:500,
+                        msg: `Error ditemukan pada query`
+                    })
+                } else {
+                    //no result data 
+                    if (!data[0]) {
+                        reject({
+                            status: 404,
+                            msg: `Username atau password salah!`
+                        })
+                    } else if (data[0].isActive == 0) {
+                        reject({
+                            status: 401,
+                            msg: `Please activate your account first!`
+                        })
+                    } else {
+                        //comparing pw
+                        bcrypt.compare(password, data[0].password, (error, result) => {
+                            //what is this ?
+                            if (err) {
+                                reject({
+                                    status:500,
+                                    msg: `Proses Hash Error!`
+                                })
+                            }
+                            //result error ?
+                            if (!result) {
+                                reject({
+                                    status: 404,
+                                    msg: `Username atau Password salah!`
+                                })
+                            } else {
+                                //sign result to payload jwt
+                                const payload = {
+                                    user_id: data[0].id,
+                                    email,
+                                    fullname: data[0].fullname,
+                                    level: data[0].level_id
+                                }
+                                //generate token 
+                                const token = jwt.sign(payload, process.env.SECRET_KEY)
+                                //resolve token to user(FE)
+                                resolve({
+                                    user_id: data[0].id,
+                                    email,
+                                    name: data[0].fullname,
+                                    level: data[0].level_id,
+                                    token
+                                })
+                            }
+
+                        })
+
+                    }
+                }
+
+            })
+        })
+    },
+    postForgot: (email) => {
+        return new Promise((resolve, reject) => {
+            const getUser = `SELECT email FROM users WHERE email = ?`
+            db.query(getUser, email, (err, data) => {
+                if (!err) {
+                    if (data[0]) {
+                        const delOtp = `DELETE FROM tb_otp WHERE email = ?`
+                        db.query(delOtp, email, (err, data) => {
+                            if (!err) {
+                                const otpCode = otp.generate(6, { alphabets: true, upperCase: true, specialChars: false })
+                                const dataResend = {
+                                    email: email,
+                                    otp: otpCode
+                                }
+                                const queryStr = `INSERT INTO tb_otp SET ?`
+                                db.query(queryStr, dataResend, (err, data) => {
+                                    if (!err) {
+                                        let transporter = nodemailer.createTransport({
+                                            service: 'gmail',
+                                            host: 'smtp.gmail.com',
+                                            port: 578,
+                                            secure: false,
+                                            auth: {
+                                                user: process.env.USER_EMAIL,
+                                                pass: process.env.PASS_EMAIL
+                                            }
+                                        })
+                                        console.log(process.env.USER_EMAIL, process.env.PASS_EMAIL)
+
+                                        let mailOptions = {
+                                            from: "BlanjaApp Team <blanja@mail.com>",
+                                            to: email,
+                                            subject: 'OTP Code Reset Password',
+                                            html:
+                                                ` 
+                                                <h1> OTP CODE from Blanja.in Team </h1>
+                                                <p> Hello, this is you OTP code ${otpCode} </p> 
+                                                <p> Use it to reset your password </p>
+                                                `
+                                        }
+                                        transporter.sendMail(mailOptions, (err, data) => {
+                                            if (err) {
+                                                console.log("Its Error: ", err);
+                                            } else {
+                                                console.log("Sent Success!!!!");
+                                                resolve({
+                                                    status: 200,
+                                                    message: `Kode OTP telah dikirim ulang ke email anda`
+                                                })
+                                            }
+                                        })
+
+                                    } else {
+                                        reject({
+                                            status: 500,
+                                            message: `Internal server error`,
+                                            details: err
+                                        })
+                                    }
+                                })
+                            } else {
+                                reject({
+                                    status: 500,
+                                    message: `Internal server error`,
+                                    details: err
+                                })
+                            }
+                        })
+                    } else {
+                        reject({
+                            status: 404,
+                            message: `Email tidak ditemukan`
+                        })
+                    }
+                } else {
+                    reject({
+                        status: 500,
+                        message: `Internal server error`,
+                        details: err
+                    })
+                }
+            })
+
+        })
+    },
+    getOtp: (email, otp) => {
+        return new Promise((resolve, reject) => {
+            const queryStr = `SELECT * FROM tb_otp WHERE email = ? AND otp = ?`
+            db.query(queryStr, [email, otp], (err, data) => {
+                if (!err) {
+                    if (data[0]) {
+                        const qs = `DELETE FROM tb_otp WHERE email = ? and otp = ?`
+                        db.query(qs, [email, otp], (err, data) => {
+                            if (!err) {
+                                resolve({
+                                    status: 200,
+                                    message: `Silahkan set ulang password anda`,
+                                    email: email
+                                })
+                            } else {
+                                reject({
+                                    status: 500,
+                                    message: `INTERNAL SERVER ERROR`,
+                                    details: err
+                                })
+                            }
+                        })
+                    } else {
+                        reject({
+                            status: 404,
+                            message: `Kode OTP tidak sesuai`
+                        })
+                    }
+                } else {
+                    reject({
+                        status: 500,
+                        message: `INTERNAL SERVER ERROR`,
+                        details: err
+                    })
+                }
+            })
+        })
+    },
+    resetPassword: (email, newPassword) => {
+        return new Promise((resolve, reject) => {
+            const saltRounds = Math.floor(Math.random() * 10) + 1
+            bcrypt.hash(newPassword, saltRounds, (err, hashedPassword) => {
+                if (!err) {
+                    newPassword = hashedPassword
+                    const queryStr = `UPDATE users SET password = ? WHERE email = ?`
+                    db.query(queryStr, [newPassword, email], (err, data) => {
+                        console.log(err, data)
+                        if (!err) {
+                            console.log('sukses')
+                            resolve({
+                                status: 200,
+                                message: `Password berhasil di ubah`
+                            })
+                        } else {
+                            reject({
+                                status: 500,
+                                message: `INTERNAL SERVER ERROR`,
+                                details: err
+                            })
+                        }
+                    })
+                } else {
+                    reject({
+                        status: 500,
+                        message: `INTERNAL SERVER ERROR`,
+                        details: err
+                    })
+                }
+            })
+
+        })
+    },
+    postLogout: (blacklisToken) => {
+        return new Promise((resolve, reject) => {
+            const queryStr = "INSERT INTO blacklist_token SET ?"
+            db.query(queryStr, blacklisToken, (err, data) => {
+                if (!err) {
+                    resolve({
+                        msg: `Logout succesful`
+                    })
+                } else {
+                    reject({
+                        msg: `GAGAL!`
+                    })
+                }
+            })
+        })
+    }
+}
