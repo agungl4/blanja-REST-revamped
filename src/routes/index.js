@@ -7,6 +7,7 @@ const productRouter = require('./product')
 const searchRouter = require('./search')
 const transactionRouter = require("./transaction")
 const authRouter = require('./auth')
+const addressRouter = require ('./address')
 
 const verifyToken = require("../helpers/middlewares/verifyToken");
 
@@ -18,6 +19,7 @@ mainRouter.use("/product", productRouter) // endpoint insert, update , delete
 mainRouter.use("/search", searchRouter) // endpoint filter
 mainRouter.use("/transaction", transactionRouter)
 mainRouter.use("/auth", authRouter)
+mainRouter.use("/address", addressRouter)
 // mainRouter.use("/upload", imgUploadRouter)
 
 
