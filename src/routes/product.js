@@ -10,16 +10,16 @@ productRouter.get('/productId/:id', productController.getProductId )
 productRouter.get('/pivotTb/:id', productController.getPivotId )
 
 //add New Product
-productRouter.post("/add-product", verifyToken.isSeller, multiUpload, productController.addNew)
+productRouter.post("/add-product", verifyToken.isLogin,verifyToken.isSeller, multiUpload, productController.addNew)
 
 //add from Existing Product
-productRouter.post("/add-stock", verifyToken.isSeller, productController.addExisting) 
+productRouter.post("/add-stock", verifyToken.isLogin,verifyToken.isSeller, productController.addExisting) 
 
 
 //update pivot table using pivotid
-productRouter.patch("/update", verifyToken.isSeller, productController.updateStock)
+productRouter.patch("/update/:id", verifyToken.isLogin, verifyToken.isSeller, productController.updateStock)
 
-productRouter.patch("/updatePrd/:id", verifyToken.isSeller, multiUpload,productController.updateProduct)
+productRouter.patch("/updatePrd/:id",verifyToken.isLogin, verifyToken.isSeller, multiUpload,productController.updateProduct)
 
 //DELETE
 productRouter.delete("/delete/:id", verifyToken.isSeller, productController.deleteProduct)

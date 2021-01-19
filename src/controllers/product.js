@@ -73,7 +73,7 @@ module.exports = {
             })
     },
     updateStock: (req, res) => {
-        const { id } = req.body
+        const { id } = req.params
         const { body } = req
         const updatePatch = {
             ...body,

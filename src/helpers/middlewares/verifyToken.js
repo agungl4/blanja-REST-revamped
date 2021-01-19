@@ -73,6 +73,7 @@ module.exports = {
           const decodedToken = jsonwebtoken.verify(result, process.env.SECRET_KEY)
           //asign decodedToken to req
           req.decodedToken = decodedToken
+          console.log(req.decodedToken)
           next() //meneruskan ke proses selanjutnya
         } catch (err) {
           res.json({

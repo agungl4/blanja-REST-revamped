@@ -11,13 +11,15 @@ const productsController = require('../controllers/products')
 productsRouter.get("/", productsController.SearchAndSort)
 
 //showAll
-productsRouter.get("/showAll", productsController.showAll)
+productsRouter.get("/showAll/:id", productsController.showAll)
 
 // //getColor
 productsRouter.get("/getColor", productsController.getColor)
 
 //getSize
 productsRouter.get("/getSize", productsController.getSize)
+
+productsRouter.get("/getByUser/:user_id", productsController.getByUser)
 
 productsRouter.get('/all_prod',(req, res) => {
     const get_all_prod = new Promise ((resolve, reject) => {

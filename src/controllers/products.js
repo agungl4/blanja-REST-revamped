@@ -5,7 +5,8 @@ const productsModel = require('../models/products')
 const form = require('../helpers/form')
 module.exports = {
   showAll:(req,res) => {
-    getModel.allProduct()
+    const {id} = req.params
+    getModel.allProduct(id)
     .then((data) => {
       form.success(res, data)
     }).catch((err) => {
@@ -124,5 +125,14 @@ module.exports = {
         form.error(res, err)
       })
   },
+  getByUser: (req,res) => {
+    const { user_id } = req.params
+    getModel.getByUser(user_id)
+    .then((data) => {
+      form.success(res, data)
+    }).catch((err) =>{
+      form.error(res, err)
+    })
+  }
 
 }

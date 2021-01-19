@@ -26,10 +26,15 @@ module.exports = {
                             }
                         }
                         resolve(newData)
+                    } else {
+                        reject({
+                            status: 404,
+                            msg: ('data tidak ditemukan')
+                        })
                     }
                 } else {
                     reject({
-                        status: 404,
+                        status: 500,
                         msg: err
                     })
                 }
