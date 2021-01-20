@@ -53,4 +53,23 @@ module.exports = {
             res.status(error.status).json(error)
         })
     },
+    getItemsTrx: (req, res) => {
+        const { trxId } = req.params
+        trxModel.getOrderDetails(trxId)
+            .then((result) => {
+                res.status(result.status).json(result)
+            }).catch((error) => {
+                res.status(error.status).json(error)
+            })
+    },
+
+    getItemtoReview: (req, res) => {
+        const { trxId } = req.params
+        trxModel.getItemtoReview(trxId)
+            .then((result) => {
+                res.status(result.status).json(result)
+            }).catch((error) => {
+                res.status(error.status).json(error)
+            })
+    }
 }

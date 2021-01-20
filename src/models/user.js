@@ -22,7 +22,7 @@ module.exports = {
 
     getReview: (productId) =>{
         return new Promise ((resolve, reject) =>{
-            const queryStr = `SELECT r.id, u.fullname, r.rating, r.review, r.created_at FROM tb_review r JOIN tb_user u ON r.user_id = u.id JOIN products p ON r.product_id = p.id WHERE product_id = ?`
+            const queryStr = `SELECT r.id, u.fullname, r.rating, r.review, r.created_at FROM tb_review r JOIN users u ON r.user_id = u.id JOIN products p ON r.product_id = p.id WHERE product_id = ?`
             db.query(queryStr, productId, (err, data) =>{
                 if(!err){
                     if(data.length > 0){
