@@ -22,8 +22,8 @@ productRouter.patch("/update/:id", verifyToken.isLogin, verifyToken.isSeller, pr
 productRouter.patch("/updatePrd/:id",verifyToken.isLogin, verifyToken.isSeller, multiUpload,productController.updateProduct)
 
 //DELETE
-productRouter.delete("/delete/:id", verifyToken.isSeller, productController.deleteProduct)
-
+productRouter.delete("/delete/:id", verifyToken.isLogin,verifyToken.isSeller, productController.deleteStock)
+productRouter.delete("/deletePrd/:id", verifyToken.isLogin,verifyToken.isSeller, productController.deleteProduct)
 //getsize & color for front-end
 productRouter.get("/get_size/:id", productController.getSize)
 productRouter.get("/get_color/:id", productController.getColor)

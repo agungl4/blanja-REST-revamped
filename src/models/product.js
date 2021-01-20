@@ -94,9 +94,21 @@ module.exports = {
             })
         })
     },
-    deleteProduct: (id) => {
+    deleteStock: (id) => {
         return new Promise((resolve, reject) => {
             const qs = "DELETE FROM master WHERE id = ?";
+            db.query(qs, id, (err, data) => {
+                if (!err) {
+                    resolve(`Data berhasil dihapus pada id = ${id}`);
+                } else {
+                    reject(err);
+                }
+            });
+        });
+    },
+    deleteProduct: (id) => {
+        return new Promise((resolve, reject) => {
+            const qs = "DELETE FROM products WHERE id = ?";
             db.query(qs, id, (err, data) => {
                 if (!err) {
                     resolve(`Data berhasil dihapus pada id = ${id}`);

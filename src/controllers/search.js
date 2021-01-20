@@ -3,7 +3,7 @@ const form = require('../helpers/form')
 module.exports = {
   searchBy: (req, res) => {
     const { query } = req
-    const limit = Number(query.limit) || 5 //jika tidak terdeklarasi limit otomatis 5
+    const limit = Number(query.limit) || 50 //jika tidak terdeklarasi limit otomatis 5
     const page = Number(query.page) || 1 //jika tidak terdeklarasi page otomatis 1
     const offset = (page - 1) * limit
 

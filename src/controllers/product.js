@@ -106,6 +106,20 @@ module.exports = {
             form.error(res, err)
         })
     },
+    deleteStock: (req, res) => {
+        const { id } = req.params
+        deleteModel.deleteStock(id)
+            .then((data) => {
+                const output = {
+                    deletedId: id,
+                    msg: data
+                }
+                res.json(output)
+            })
+            .catch((err) => {
+                res.json(err);
+            })
+    },
     deleteProduct: (req, res) => {
         const { id } = req.params
         deleteModel.deleteProduct(id)
