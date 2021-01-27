@@ -37,20 +37,6 @@ module.exports = {
                 form.error(res, err)
             })
     },
-    addExisting: (req, res) => {
-        // const add_stock = req.body
-        const { user_id } = req.decodedToken
-        add_stock = {
-            ...req.body,
-            user_id
-        }
-        addExistingModel.addExisting(add_stock)
-            .then((data) => {
-                form.success(res, data)
-            }).catch((err) => {
-                form.error(res, err)
-            })
-    },
     updateProduct: (req, res) => {
         const { id } = req.params
         let { body } = req
@@ -62,24 +48,6 @@ module.exports = {
             }
         }
         updateModel.updateProduct(body, id)
-            .then((result) => {
-                const output = {
-                    msg: `Data updated at id ${id}`,
-                    ...result,
-                }
-                res.json(output)
-            }).catch((err) => {
-                res.json(err)
-            })
-    },
-    updateStock: (req, res) => {
-        const { id } = req.params
-        const { body } = req
-        const updatePatch = {
-            ...body,
-            updated_at: new Date(Date.now())
-        }
-        updateModel.updateStock(id, updatePatch)
             .then((result) => {
                 const output = {
                     msg: `Data updated at id ${id}`,
@@ -106,20 +74,6 @@ module.exports = {
             form.error(res, err)
         })
     },
-    deleteStock: (req, res) => {
-        const { id } = req.params
-        deleteModel.deleteStock(id)
-            .then((data) => {
-                const output = {
-                    deletedId: id,
-                    msg: data
-                }
-                res.json(output)
-            })
-            .catch((err) => {
-                res.json(err);
-            })
-    },
     deleteProduct: (req, res) => {
         const { id } = req.params
         deleteModel.deleteProduct(id)
@@ -144,14 +98,4 @@ module.exports = {
                 form.error(res, err)
             })
     },
-    getPivotId: (req, res) => {
-        const { id } = req.params
-        getByIdModel.getPivotId(id)
-            .then((data) => {
-                form.success(res, data)
-            })
-            .catch((err) => {
-                form.error(res, err)
-            })
-    }
 }

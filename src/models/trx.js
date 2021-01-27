@@ -15,7 +15,7 @@ module.exports = {
                 } else {
                     reject({
                         status: 500,
-                        message: er
+                        message: err
                     })
                 }
             })
@@ -58,7 +58,7 @@ module.exports = {
     },
     getMyTrans: (userId) => {
         return new Promise((resolve, reject) => {
-            const queryStr = `SELECT trxId, trackingNumber, qty,total, status, created_at FROM tb_transaksi WHERE user_id = ?`
+            const queryStr = `SELECT t.user_id, t.trxId, t.trackingNumber, t.qty,t.total,t.status as status_id, s.status, t.created_at FROM tb_transaksi t JOIN status_pengiriman s ON t.status = s.id WHERE t.user_id = ?`
             db.query(queryStr, userId, (err, data) => {
                 if (!err) {
                     if (data.length > 0) {
@@ -67,8 +67,8 @@ module.exports = {
                             data: data
                         })
                     } else {
-                        resolve({
-                            status: 200,
+                        reject({
+                            status: 404,
                             data: `Belum ada transaksi`
                         })
                     }
@@ -136,5 +136,49 @@ module.exports = {
                 }
             })
         })
-    }
+    },
+    changeStatusOrder : (status, trxid) =>{
+        return new Promise ((resolve, reject) =>{
+            const queryStr = `UPDATE tb_transaksi SET status = ? WHERE TrxId = ?`
+            db.query(queryStr, [status, trxid], (err, data) =>{
+                if(!err){
+                    resolve({
+                        status:200,
+                        message:'berhasil'
+                    })
+                }else{
+                    reject({
+                        status:500,
+                        message:err
+                    })
+                }
+            })
+        })
+    },
+    getSellerOrderData :() => {
+        return new Promise((resolve, reject) => {
+            const queryStr = `SELECT t.user_id, t.TrxId, t.trackingNumber, t.qty,t.total,t.status as status_id, s.status, t.created_at FROM tb_transaksi t JOIN delivery_status s ON t.status = s.id`
+            db.query(queryStr, (err, data) => {
+                if (!err) {
+                    if (data.length > 0) {
+                        resolve({
+                            status: 200,
+                            data: data
+                        })
+                    } else {
+                        resolve({
+                            status: 200,
+                            message: 'Belum ada transaksi',
+                            data: []
+                        })
+                    }
+                } else {
+                    reject({
+                        status: 500,
+                        message: err
+                    })
+                }
+            })
+        })
+    },
 }

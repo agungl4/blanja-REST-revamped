@@ -39,7 +39,7 @@ module.exports = {
     },
     getAddress: (id) => {
         return new Promise((resolve, reject) => {
-            const queryStr = `SELECT id, recipient_name, address, city, postal, phone FROM address WHERE user_id = ?`
+            const queryStr = `SELECT id,address_type, recipient_name, address, city, postal, phone FROM address WHERE user_id = ?`
             db.query(queryStr, id, (err, data) => {
                 if (!err) {
                     if (data[0]) {

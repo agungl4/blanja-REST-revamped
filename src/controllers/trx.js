@@ -62,7 +62,6 @@ module.exports = {
                 res.status(error.status).json(error)
             })
     },
-
     getItemtoReview: (req, res) => {
         const { trxId } = req.params
         trxModel.getItemtoReview(trxId)
@@ -71,5 +70,22 @@ module.exports = {
             }).catch((error) => {
                 res.status(error.status).json(error)
             })
-    }
+    },
+    getSellerOrderData: (req, res) => {
+        trxModel.getSellerOrderData()
+            .then((result) => {
+                res.status(result.status).json(result)
+            }).catch((error) => {
+                res.status(error.status).json(error)
+            })
+    },
+    changeStatusOrder: (req, res) => {
+        const { status, trxid } = req.params
+        trxModel.changeStatusOrder(status, trxid)
+            .then((result) => {
+                res.status(result.status).json(result)
+            }).catch((error) => {
+                res.status(error.status).json(error)
+            })
+    },
 }
