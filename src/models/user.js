@@ -1,5 +1,5 @@
 const db = require('../config/mySQL')
-
+const bcrypt = require('bcrypt')
 module.exports = {
     addReview: (body) =>{
         return new Promise ((resolve, reject) =>{
@@ -66,7 +66,7 @@ module.exports = {
     changePassword: (body) => {
         return new Promise((resolve, reject) => {
             const { email, old_password, new_password } = body
-            const queryStr = `SELECT password FROM tb_user WHERE email = ?`
+            const queryStr = `SELECT password FROM users WHERE email = ?`
             db.query(queryStr, email, (err, data) => {
                 if (!err) {
                     if (data.length > 0) {
@@ -91,7 +91,7 @@ module.exports = {
                                             message: errorHash
                                         })
                                     } else {
-                                        const updatePassword = `UPDATE tb_user SET password = ? WHERE email = ?`
+                                        const updatePassword = `UPDATE users SET password = ? WHERE email = ?`
                                         db.query(updatePassword, [hashedPassword, email], (errorUpdate, dataUpdate) => {
                                             if (!errorUpdate) {
                                                 resolve({
