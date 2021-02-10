@@ -14,7 +14,7 @@ module.exports = {
     },
     SearchAndSort: (addQuery, urlQuery, total_result, page, offset, limit) => {
         return new Promise((resolve, reject) => {
-            let queryStr =  `SELECT p.id, p.product_name,p.product_img, c.category_name, cl.color_name, s.size_name, cd.condition_name,p.product_price, IFNULL(rev.rating,0) as rating, IFNULL(rev.dibeli,0) as dibeli
+            let queryStr =  `SELECT p.id, p.product_name,p.product_img,c.id as category_id, c.category_name, cl.color_name, s.size_name, cd.condition_name,p.product_price, IFNULL(rev.rating,0) as rating, IFNULL(rev.dibeli,0) as dibeli
             FROM products p
             JOIN category c ON p.category_id = c.id
             JOIN color cl ON p.color_id = cl.id
