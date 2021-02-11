@@ -10,7 +10,7 @@ const authRouter = require('./auth')
 const addressRouter = require ('./address')
 const trxRouter = require ("./trx")
 const userRouter = require ('./user')
-
+const chatRouter = require ('./chat')
 const verifyToken = require("../helpers/middlewares/verifyToken");
 
 
@@ -24,6 +24,7 @@ mainRouter.use("/auth", authRouter)
 mainRouter.use("/address", addressRouter)
 mainRouter.use("/transactions", trxRouter) //Trx
 mainRouter.use("/user", userRouter)
+mainRouter.use('/chat', chatRouter)
 // mainRouter.use("/upload", imgUploadRouter)
 
 

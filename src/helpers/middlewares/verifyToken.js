@@ -34,6 +34,7 @@ module.exports = {
   },
   isLogin: (req, res, next) => {
     const bearerToken = req.header("x-access-token");
+    console.log(bearerToken)
     //jika tidak ada header x-access-token
     if (!bearerToken) {
       res.json({
