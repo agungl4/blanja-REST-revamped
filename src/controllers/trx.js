@@ -8,7 +8,7 @@ module.exports = {
         console.log(body)
         trxModel.addTrx(body)
             .then((result) => {
-                if (global.io.emit('forSeller', '1 pesanan baru diterima')) {
+                if (global.io.emit('forSeller', `1 pesanan baru diterima dengan No. transaksi ${body.TrxId}`)) {
                     console.log('send to Seller sukses')
                 }
                 res.status(200).json(result)

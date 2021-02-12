@@ -58,7 +58,7 @@ module.exports = {
     },
     getMyTrans: (userId) => {
         return new Promise((resolve, reject) => {
-            const queryStr = `SELECT t.user_id, t.trxId, t.trackingNumber, t.qty,t.total,t.status as status_id, s.status, t.created_at FROM tb_transaksi t JOIN delivery_status s ON t.status = s.id WHERE t.user_id = ?`
+            const queryStr = `SELECT t.user_id, t.trxId, t.trackingNumber, t.qty,t.total,t.status as status_id, s.status, t.created_at FROM tb_transaksi t JOIN delivery_status s ON t.status = s.id WHERE t.user_id = ? ORDER BY t.created_at DESC`
             db.query(queryStr, userId, (err, data) => {
                 if (!err) {
                     if (data.length > 0) {
@@ -157,7 +157,7 @@ module.exports = {
     },
     getSellerOrderData :() => {
         return new Promise((resolve, reject) => {
-            const queryStr = `SELECT t.user_id, t.TrxId, t.trackingNumber, t.qty,t.total,t.status as status_id, s.status, t.created_at FROM tb_transaksi t JOIN delivery_status s ON t.status = s.id`
+            const queryStr = `SELECT t.user_id, t.TrxId, t.trackingNumber, t.qty,t.total,t.status as status_id, s.status, t.created_at FROM tb_transaksi t JOIN delivery_status s ON t.status = s.id ORDER BY t.created_at DESC`
             db.query(queryStr, (err, data) => {
                 if (!err) {
                     if (data.length > 0) {

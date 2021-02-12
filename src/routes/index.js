@@ -12,7 +12,7 @@ const trxRouter = require ("./trx")
 const userRouter = require ('./user')
 const chatRouter = require ('./chat')
 const verifyToken = require("../helpers/middlewares/verifyToken");
-
+const notifRouter = require('./notif')
 
 //calling endpoint handler
 mainRouter.use("/", welcomeRouter)
@@ -25,6 +25,7 @@ mainRouter.use("/address", addressRouter)
 mainRouter.use("/transactions", trxRouter) //Trx
 mainRouter.use("/user", userRouter)
 mainRouter.use('/chat', chatRouter)
+mainRouter.use('/notif', notifRouter)
 // mainRouter.use("/upload", imgUploadRouter)
 
 
