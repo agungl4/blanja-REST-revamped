@@ -37,7 +37,7 @@ module.exports = {
     console.log(bearerToken)
     //jika tidak ada header x-access-token
     if (!bearerToken) {
-      res.json({
+      res.status(401).json({
         msg: `Please login first`,
         status: 401 //unauthorized access
       })

@@ -40,5 +40,14 @@ module.exports = {
             }).catch((error) => {
                 res.status(error.status).json(error)
             })
+    },
+    getNameUser: (req, res) =>{
+        const {id} = req.params
+        userModel.getNameUser(id)
+        .then((result) => {
+            res.status(result.status).json(result)
+        }).catch((error) => {
+            res.status(error.status).json(error)
+        })
     }
 }

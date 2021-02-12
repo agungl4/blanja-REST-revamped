@@ -123,5 +123,24 @@ module.exports = {
                 }
             })
         })
+    },
+    getNameUser : (id) =>{
+        return new Promise ((resolve, reject) =>{
+            const queryStr = `SELECT fullname FROM users WHERE id = ?`
+            db.query(queryStr, id, (err, data) =>{
+                console.log(err, data)
+                if(!err){
+                    resolve({
+                        status:200,
+                        data:data[0]
+                    })
+                }else{
+                    reject({
+                        status:500,
+                        data:err
+                    })
+                }
+            })
+        })
     }
 }
