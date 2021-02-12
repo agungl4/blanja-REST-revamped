@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 12, 2021 at 04:16 AM
+-- Generation Time: Feb 12, 2021 at 05:14 AM
 -- Server version: 10.4.16-MariaDB
 -- PHP Version: 7.4.12
 
@@ -158,20 +158,6 @@ INSERT INTO `delivery_status` (`id`, `status`) VALUES
 (2, 'On Process'),
 (3, 'Delivering'),
 (4, 'Delivered');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `history`
---
-
-CREATE TABLE `history` (
-  `id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `product` int(11) NOT NULL,
-  `product_qty` int(11) NOT NULL,
-  `created_at` int(11) NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -579,14 +565,6 @@ ALTER TABLE `delivery_status`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `history`
---
-ALTER TABLE `history`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `user_id` (`user_id`),
-  ADD KEY `product` (`product`);
-
---
 -- Indexes for table `payment`
 --
 ALTER TABLE `payment`
@@ -700,12 +678,6 @@ ALTER TABLE `delivery_status`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
--- AUTO_INCREMENT for table `history`
---
-ALTER TABLE `history`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
-
---
 -- AUTO_INCREMENT for table `payment`
 --
 ALTER TABLE `payment`
@@ -788,12 +760,6 @@ ALTER TABLE `bag`
   ADD CONSTRAINT `bag_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`),
   ADD CONSTRAINT `bag_ibfk_2` FOREIGN KEY (`color_id`) REFERENCES `color` (`id`),
   ADD CONSTRAINT `bag_ibfk_3` FOREIGN KEY (`size_id`) REFERENCES `size` (`id`);
-
---
--- Constraints for table `history`
---
-ALTER TABLE `history`
-  ADD CONSTRAINT `history_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
 
 --
 -- Constraints for table `products`
