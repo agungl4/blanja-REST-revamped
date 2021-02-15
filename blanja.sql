@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 12, 2021 at 05:14 AM
+-- Generation Time: Feb 15, 2021 at 05:34 AM
 -- Server version: 10.4.16-MariaDB
 -- PHP Version: 7.4.12
 
@@ -293,6 +293,7 @@ INSERT INTO `size` (`id`, `size_name`) VALUES
 --
 
 CREATE TABLE `tb_chat` (
+  `id` int(11) NOT NULL,
   `seller` int(11) NOT NULL,
   `buyer` int(11) NOT NULL,
   `chatroom` varchar(255) NOT NULL,
@@ -300,27 +301,6 @@ CREATE TABLE `tb_chat` (
   `message` longtext NOT NULL,
   `created_at` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `tb_chat`
---
-
-INSERT INTO `tb_chat` (`seller`, `buyer`, `chatroom`, `sender`, `message`, `created_at`) VALUES
-(19, 18, 'S19B18', 18, 'halo', '2021-02-11 12:24:08.056'),
-(19, 18, 'S19B18', 18, 'halo', '2021-02-11 12:24:17.356'),
-(19, 18, 'S19B18', 18, 'halo', '2021-02-11 12:26:08.017'),
-(19, 18, 'S19B18', 18, 'halo', '2021-02-11 12:26:54.149'),
-(19, 18, 'S19B18', 18, 'crot', '2021-02-11 12:39:21.408'),
-(19, 18, 'S19B18', 18, 'crot', '2021-02-11 12:40:35.057'),
-(19, 18, 'S19B18', 18, 'a', '2021-02-11 12:40:42.770'),
-(19, 18, 'S19B18', 18, 'a', '2021-02-11 12:41:48.834'),
-(19, 18, 'S19B18', 18, 'ggggg', '2021-02-11 12:41:56.704'),
-(19, 18, 'S19B18', 18, 'wkwkk', '2021-02-11 12:42:36.824'),
-(19, 18, 'S19B18', 18, 'punten', '2021-02-12 05:46:09.599'),
-(19, 18, 'S19B18', 19, 'mangga', '2021-02-12 05:46:22.442'),
-(19, 18, 'S19B18', 18, 'skinnya berapaan mang', '2021-02-12 05:46:52.431'),
-(19, 18, 'S19B18', 19, '150k', '2021-02-12 08:45:51.200'),
-(19, 18, 'S19B18', 18, 'beli 1', '2021-02-12 08:46:16.233');
 
 -- --------------------------------------------------------
 
@@ -596,6 +576,12 @@ ALTER TABLE `size`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `tb_chat`
+--
+ALTER TABLE `tb_chat`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `tb_item_order`
 --
 ALTER TABLE `tb_item_order`
@@ -700,6 +686,12 @@ ALTER TABLE `rating`
 --
 ALTER TABLE `size`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+
+--
+-- AUTO_INCREMENT for table `tb_chat`
+--
+ALTER TABLE `tb_chat`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `tb_item_order`

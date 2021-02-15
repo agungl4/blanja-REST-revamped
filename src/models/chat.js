@@ -1,4 +1,3 @@
-const { query } = require('express')
 const db = require('../config/mySQL')
 
 
@@ -77,11 +76,11 @@ module.exports = {
     getNewMessage: (chatRoom) => {
         return new Promise((resolve, reject) => {
             const queryStr = `
-            SELECT c.seller, c.buyer,c.chatroom, c.sender as sender_id, u.fullname as sender_name, c.message, c.created_at 
+            SELECT c.id, c.seller, c.buyer,c.chatroom, c.sender as sender_id, u.fullname as sender_name, c.message, c.created_at 
             FROM tb_chat c 
             JOIN users u ON c.sender = u.id 
             WHERE c.chatroom = ?
-            ORDER BY c.created_at ASC`
+            ORDER BY c.created_at DESC`
             db.query(queryStr, chatRoom, (err, data) => {
                 if (!err) {
                     if (data.length > 0) {
